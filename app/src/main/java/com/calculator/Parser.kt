@@ -6,7 +6,7 @@ fun parse(input: String): List<Token> {
     val operators = mapOf(
         '+' to Token(TokenType.Plus),
         '-' to Token(TokenType.Minus),
-        '*' to Token(TokenType.Multiply),
+        'x' to Token(TokenType.Multiply),
     )
 
     var i = 0

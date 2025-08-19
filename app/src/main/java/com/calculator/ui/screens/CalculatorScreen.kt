@@ -24,53 +24,77 @@ import com.calculator.Calculator
 import com.calculator.Calculator.eval
 import com.calculator.parse
 
+data class ButtonInfo(
+    val text: String,
+    val background: Color = DigitButtonColor,
+    val textColor: Color = Color.Black,
+    val modifier: Modifier = Modifier,
+    val onClick: () -> Unit = {
+        var displayText by Calculator.input
+        displayText += text
+    }
+)
+
 @Preview
 @Composable
 fun CalculatorScreen() {
     var displayText by Calculator.input
 
     Column(
-        modifier = Modifier.fillMaxSize().background(Color.DarkGray).padding(8.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.DarkGray)
+            .padding(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Row {
-            CalculatorDisplay(displayText)
-        }
-        Row(
-            modifier = Modifier.padding(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            listOf('7', '8', '9', '*').map {
-                CalculatorButton(it.toString(), color = if (it == '*') OperatorButtonColor else DigitButtonColor) { displayText += it }
-            }
-        }
-        Row(
-            modifier = Modifier.padding(bottom=8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            listOf('4', '5', '6', '-').map {
-                CalculatorButton(it.toString(), color = if (it == '-') OperatorButtonColor else DigitButtonColor) { displayText += it }
-            }
-        }
-        Row(
-            modifier = Modifier.padding(bottom=8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            listOf('1', '2', '3', '+').map {
-                CalculatorButton(it.toString(), color = if (it == '+') OperatorButtonColor else DigitButtonColor) { displayText += it }
-            }
+        Row { CalculatorDisplay(displayText) }
 
-        }
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            listOf('0', ',').map {
-                CalculatorButton(it.toString(), color = if (it == '+') OperatorButtonColor else DigitButtonColor) { displayText += it }
-            }
-            CalculatorButton("x", color = EraseButtonColor) { displayText = displayText.dropLast(1) }
-            CalculatorButton("=", color = EvalButtonColor) { displayText = eval(parse(displayText)).toString() }
+        val buttonsRows = listOf(
+            listOf(
+                ButtonInfo("C", background = EraseButtonColor, textColor = Color.White),
+                ButtonInfo(" ", onClick = {}),
+                ButtonInfo(" ", onClick = {}),
+                ButtonInfo("/", OperatorButtonColor, textColor = Color.White)
+            ),
+            listOf(
+                ButtonInfo("7"),
+                ButtonInfo("8"),
+                ButtonInfo("9"),
+                ButtonInfo("x", OperatorButtonColor, textColor = Color.White)
+            ),
+            listOf(
+                ButtonInfo("4"),
+                ButtonInfo("5"),
+                ButtonInfo("6"),
+                ButtonInfo("+", OperatorButtonColor, textColor = Color.White)
+            ),
+            listOf(
+                ButtonInfo("1"),
+                ButtonInfo("2"),
+                ButtonInfo("3"),
+                ButtonInfo("-", OperatorButtonColor, textColor = Color.White)
+            ),
+            listOf(
+                ButtonInfo("."),
+                ButtonInfo("0"),
+                ButtonInfo(" ", onClick = {}),
+                ButtonInfo("=", EvalButtonColor, textColor = Color.White, onClick = { displayText = eval(parse(displayText)).toString() })
+            ),
+        )
+
+        buttonsRows.forEach { CalculatorRow(it) }
+    }
+}
+
+@Composable
+fun CalculatorRow(buttons: List<ButtonInfo>) {
+    Row(
+        modifier = Modifier.padding(bottom = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        buttons.forEach { button ->
+            CalculatorButton(button.text, background = button.background, textColor = button.textColor) { button.onClick() }
         }
     }
-
 }
 

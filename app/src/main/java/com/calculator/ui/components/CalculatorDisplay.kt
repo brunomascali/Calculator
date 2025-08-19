@@ -26,7 +26,7 @@ fun CalculatorDisplay(text: String = "") {
         Card(
             modifier = Modifier
                 .padding(8.dp)
-                .height(64.dp),
+                .height(128.dp),
             colors = CardDefaults.cardColors(
                 containerColor = Color.LightGray
             )
