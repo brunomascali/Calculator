@@ -2,30 +2,15 @@ package com.calculator
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import java.util.Locale
 import java.util.Stack
+import kotlin.math.sign
 
 object Calculator {
     var input: MutableState<String> = mutableStateOf("")
 
-    private fun op(opType: TokenType, a: Int, b: Int): Int {
-        if (opType == TokenType.Plus) return a + b
-        if (opType == TokenType.Minus) return a - b
-        if (opType == TokenType.Multiply) return a * b
-
-        return 0
-    }
-
-    fun precedence(operator: TokenType): Int {
-        return when (operator) {
-            TokenType.Plus -> 1
-            TokenType.Minus -> 1
-            TokenType.Multiply -> 2
-            TokenType.Number -> TODO()
-        }
-    }
-
-    fun eval(expr: List<Token>): Int {
-        val numbers = Stack<Int>()
+    fun eval(expr: List<Token>): Double {
+        val numbers = Stack<Double>()
         val operations = Stack<TokenType>()
 
         for (token in expr) {
@@ -55,4 +40,33 @@ object Calculator {
 
         return numbers.first()
     }
+
+    private fun op(opType: TokenType, a: Double, b: Double): Double {
+        return when (opType) {
+            TokenType.Plus -> a + b
+            TokenType.Minus -> a - b
+            TokenType.Multiply -> return a * b
+            TokenType.Divide -> a / b
+            else -> -42.0
+        }
+    }
+
+    private fun precedence(operator: TokenType): Int {
+        return when (operator) {
+            TokenType.Plus -> 1
+            TokenType.Minus -> 1
+            TokenType.Multiply -> 2
+            TokenType.Divide -> 2
+            TokenType.Number -> TODO()
+        }
+    }
+
+    fun formatDouble(value: Double): String {
+        return if (value % 1.0 == 0.0) {
+            value.toInt().toString()
+        } else {
+            String.format(locale = Locale.US, "%.8f", value).trimEnd('0').trimEnd('.')
+        }
+    }
+
 }

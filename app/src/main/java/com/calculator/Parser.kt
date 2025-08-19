@@ -7,6 +7,7 @@ fun parse(input: String): List<Token> {
         '+' to Token(TokenType.Plus),
         '-' to Token(TokenType.Minus),
         'x' to Token(TokenType.Multiply),
+        '/' to Token(TokenType.Divide),
     )
 
     var i = 0
@@ -24,7 +25,20 @@ fun parse(input: String): List<Token> {
                 if (i >= input.length) break
                 else current = input[i]
             }
-            tokens.add(Token(TokenType.Number, str.toString().toInt()))
+
+            if (current == '.') {
+                str.append('.')
+                i += 1
+                current = input[i]
+                while (current.isDigit()) {
+                    str.append(current)
+                    i += 1
+                    if (i >= input.length) break
+                    else current = input[i]
+                }
+            }
+
+            tokens.add(Token(TokenType.Number, str.toString().toDouble()))
         }
     }
 

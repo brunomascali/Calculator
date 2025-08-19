@@ -4,7 +4,6 @@ import org.junit.Test
 import org.junit.Assert.*
 
 class CalculatorTests {
-
     @Test
     fun simple_add() {
         val input = "1+2"
