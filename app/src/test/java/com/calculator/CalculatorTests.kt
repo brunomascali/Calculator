@@ -29,4 +29,16 @@ class CalculatorTests {
         input = "1*2+3"
         assertEquals(Calculator.eval(parse(input)), 5)
     }
+
+    @Test
+    fun power() {
+        val input = "2^3"
+        assertEquals(Calculator.eval(parse(input)), 8.0, 1e-10)
+    }
+
+    @Test
+    fun sqrt() {
+        val input = "√4"
+        assertEquals(Calculator.eval(parse(input)), 2.0, 1e-10)
+    }
 }

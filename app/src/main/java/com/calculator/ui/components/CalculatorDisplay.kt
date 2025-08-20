@@ -2,9 +2,8 @@ package com.calculator.ui.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
@@ -19,17 +18,16 @@ import androidx.compose.ui.unit.sp
 
 @Preview
 @Composable
-fun CalculatorDisplay(text: String = "") {
+fun CalculatorDisplay(modifier: Modifier = Modifier, text: String = "", ) {
     Box(
         contentAlignment = Alignment.Center
     ) {
         Card(
-            modifier = Modifier
-                .padding(8.dp)
-                .height(128.dp),
+            modifier = modifier,
             colors = CardDefaults.cardColors(
                 containerColor = Color.LightGray
-            )
+            ),
+            shape = RoundedCornerShape(0.0f)
         ) {
             Box(
                 modifier = Modifier
