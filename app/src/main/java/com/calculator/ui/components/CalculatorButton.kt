@@ -1,12 +1,13 @@
 package com.calculator.ui.components
 
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -14,21 +15,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Preview
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CalculatorButton(
-    text: String = "1",
+    text: String = "",
     modifier: Modifier = Modifier,
-    background: Color = Color.DarkGray,
-    textColor: Color = Color.Black,
-    onClick: () -> Unit = {}
+    backgroundColor: Color = Color.LightGray,
+    fontColor: Color = Color.White,
+    onClick: () -> Unit = {},
+    onLongClick: () -> Unit = {}
 ) {
-    Button(
-        onClick = onClick,
-        modifier = modifier.size(80.dp),
-        contentPadding = PaddingValues(0.dp),
-        shape = RoundedCornerShape(16.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = background)
+    Surface(
+        modifier = modifier
+            .combinedClickable(
+                onClick = onClick,
+                onLongClick = onLongClick
+            ),
+        color = backgroundColor,
+        shape = RoundedCornerShape(6.dp),
     ) {
-        Text(text, fontSize = 48.sp, color = textColor)
+        Box(contentAlignment = Alignment.Center) {
+            Text(text, color = fontColor, fontSize = 28.sp)
+        }
     }
 }

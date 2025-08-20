@@ -130,4 +130,3 @@ fun CalculatorRow(buttons: List<ButtonInfo>) {
         }
     }
 }
-
