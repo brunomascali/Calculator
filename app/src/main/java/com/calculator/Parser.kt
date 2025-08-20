@@ -8,6 +8,8 @@ fun parse(input: String): List<Token> {
         '-' to Token(TokenType.Minus),
         'x' to Token(TokenType.Multiply),
         '/' to Token(TokenType.Divide),
+        '^' to Token(TokenType.Expo),
+        '√' to Token(TokenType.Sqrt),
     )
 
     var i = 0

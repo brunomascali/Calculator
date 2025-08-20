@@ -4,7 +4,8 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import java.util.Locale
 import java.util.Stack
-import kotlin.math.sign
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 object Calculator {
     var input: MutableState<String> = mutableStateOf("")
@@ -21,10 +22,14 @@ object Calculator {
                 val operator = token.type
                 while (operations.isNotEmpty() && precedence(operations.first()) > precedence(operator)) {
                     val operation = operations.pop()
-                    val b = numbers.pop()
-                    val a = numbers.pop()
 
-                    numbers.push(op(operation, a, b))
+                    val b = numbers.pop()
+                    if (operation == TokenType.Sqrt) {
+                        numbers.push(unop(operation, b))
+                    } else {
+                        val a = numbers.pop()
+                        numbers.push(binop(operation, a, b))
+                    }
                 }
                 operations.push(token.type)
             }
@@ -32,21 +37,33 @@ object Calculator {
 
         while (operations.isNotEmpty()) {
             val operation = operations.pop()
-            val b = numbers.pop()
-            val a = numbers.pop()
 
-            numbers.push(op(operation, a, b))
+            val b = numbers.pop()
+            if (operation == TokenType.Sqrt) {
+                numbers.push(unop(operation, b))
+            } else {
+                val a = numbers.pop()
+                numbers.push(binop(operation, a, b))
+            }
         }
 
         return numbers.first()
     }
 
-    private fun op(opType: TokenType, a: Double, b: Double): Double {
+    private fun binop(opType: TokenType, a: Double, b: Double): Double {
         return when (opType) {
             TokenType.Plus -> a + b
             TokenType.Minus -> a - b
             TokenType.Multiply -> return a * b
             TokenType.Divide -> a / b
+            TokenType.Expo ->  a.pow(b)
+            else -> -42.0
+        }
+    }
+
+    private fun unop(opType: TokenType, a: Double): Double {
+        return when (opType) {
+            TokenType.Sqrt -> sqrt(a)
             else -> -42.0
         }
     }
@@ -57,6 +74,8 @@ object Calculator {
             TokenType.Minus -> 1
             TokenType.Multiply -> 2
             TokenType.Divide -> 2
+            TokenType.Expo -> 3
+            TokenType.Sqrt -> 3
             TokenType.Number -> TODO()
         }
     }
