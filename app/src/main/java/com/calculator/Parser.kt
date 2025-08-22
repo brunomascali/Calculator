@@ -6,7 +6,7 @@ fun parse(input: String): List<Token> {
     val operators = mapOf(
         '+' to Token(TokenType.Plus),
         '-' to Token(TokenType.Minus),
-        'x' to Token(TokenType.Multiply),
+        '*' to Token(TokenType.Multiply),
         '/' to Token(TokenType.Divide),
         '^' to Token(TokenType.Expo),
         '√' to Token(TokenType.Sqrt),
@@ -17,6 +17,14 @@ fun parse(input: String): List<Token> {
         var current = input[i]
         if (input[i] in operators) {
             tokens.add(operators.getValue(current))
+            i += 1
+        }
+        else if (input[i] == '(') {
+            tokens.add(Token(TokenType.ParenStart))
+            i += 1
+        }
+        else if (input[i] == ')') {
+            tokens.add(Token(TokenType.ParenEnd))
             i += 1
         }
         else {

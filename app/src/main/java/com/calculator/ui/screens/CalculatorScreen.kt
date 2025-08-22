@@ -61,6 +61,12 @@ fun CalculatorScreen() {
 
             val buttonsRows = listOf(
                 listOf(
+                    ButtonInfo(" ", onClick = {}),
+                    ButtonInfo(" ", onClick = {}),
+                    ButtonInfo("(", OperatorButtonColor, textColor = Color.White),
+                    ButtonInfo(")", OperatorButtonColor, textColor = Color.White)
+                ),
+                listOf(
                     ButtonInfo(
                         "C",
                         background = EraseButtonColor,
@@ -77,7 +83,7 @@ fun CalculatorScreen() {
                     ButtonInfo("7"),
                     ButtonInfo("8"),
                     ButtonInfo("9"),
-                    ButtonInfo("x", OperatorButtonColor, textColor = Color.White)
+                    ButtonInfo("*", OperatorButtonColor, textColor = Color.White)
                 ),
                 listOf(
                     ButtonInfo("4"),

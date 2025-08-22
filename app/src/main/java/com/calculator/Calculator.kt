@@ -12,71 +12,72 @@ object Calculator {
 
     fun eval(expr: List<Token>): Double {
         val numbers = Stack<Double>()
-        val operations = Stack<TokenType>()
+        val operations = Stack<Token>()
+
+        val popAndEval: () -> Double = {
+            val operation = operations.pop()
+
+            if (operation.isUnop()) {
+                val b = numbers.pop()
+                unop(operation, b)
+            } else {
+                val b = numbers.pop()
+                val a = numbers.pop()
+                binop(operation, a, b)
+            }
+        }
 
         for (token in expr) {
-            if (token.type == TokenType.Number) {
-                numbers.push(token.value)
-            }
-            else {
-                val operator = token.type
-                while (operations.isNotEmpty() && precedence(operations.first()) > precedence(operator)) {
-                    val operation = operations.pop()
+            when (token.type) {
+                TokenType.Number -> numbers.push(token.value)
 
-                    val b = numbers.pop()
-                    if (operation == TokenType.Sqrt) {
-                        numbers.push(unop(operation, b))
-                    } else {
-                        val a = numbers.pop()
-                        numbers.push(binop(operation, a, b))
+                TokenType.ParenStart -> operations.push(token)
+
+                TokenType.ParenEnd -> {
+                    while (operations.peek().type != TokenType.ParenStart) {
+                        val result = popAndEval()
+                        numbers.push(result)
                     }
+                    operations.pop()
                 }
-                operations.push(token.type)
+
+                else -> {
+                    val op = token
+                    while (operations.isNotEmpty()
+                        && operations.peek().type != TokenType.ParenStart
+                        && (operations.peek().precedence() > op.precedence()
+                                || (operations.peek().precedence() == op.precedence() && op.associativity() == Associativity.Left))
+                    ) {
+                        popAndEval()
+                    }
+                    operations.push(op)
+                }
             }
         }
 
         while (operations.isNotEmpty()) {
-            val operation = operations.pop()
-
-            val b = numbers.pop()
-            if (operation == TokenType.Sqrt) {
-                numbers.push(unop(operation, b))
-            } else {
-                val a = numbers.pop()
-                numbers.push(binop(operation, a, b))
-            }
+            val result = popAndEval()
+            numbers.push(result)
         }
 
-        return numbers.first()
+        return numbers.peek()
     }
 
-    private fun binop(opType: TokenType, a: Double, b: Double): Double {
-        return when (opType) {
+    private fun binop(token: Token, a: Double, b: Double): Double {
+        return when (token.type) {
             TokenType.Plus -> a + b
             TokenType.Minus -> a - b
-            TokenType.Multiply -> return a * b
+            TokenType.Multiply -> a * b
             TokenType.Divide -> a / b
-            TokenType.Expo ->  a.pow(b)
+            TokenType.Expo -> a.pow(b)
             else -> -42.0
         }
     }
 
-    private fun unop(opType: TokenType, a: Double): Double {
-        return when (opType) {
+    private fun unop(token: Token, a: Double): Double {
+        return when (token.type) {
             TokenType.Sqrt -> sqrt(a)
             else -> -42.0
-        }
-    }
-
-    private fun precedence(operator: TokenType): Int {
-        return when (operator) {
-            TokenType.Plus -> 1
-            TokenType.Minus -> 1
-            TokenType.Multiply -> 2
-            TokenType.Divide -> 2
-            TokenType.Expo -> 3
-            TokenType.Sqrt -> 3
-            TokenType.Number -> TODO()
         }
     }
 
