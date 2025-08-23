@@ -9,7 +9,8 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
-import com.calculator.ui.screens.CalculatorScreen
+import com.calculator.ui.screens.CalculatorApp
+import com.calculator.ui.theme.CalculatorTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,10 +20,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            Box(
-                modifier = Modifier.statusBarsPadding().fillMaxSize(),
-                contentAlignment = Alignment.Center) {
-                CalculatorScreen()
+            CalculatorTheme(darkTheme = true) {
+                Box(
+                    modifier = Modifier.statusBarsPadding().fillMaxSize(),
+                    contentAlignment = Alignment.Center) {
+                    CalculatorApp()
+                }
             }
         }
     }
