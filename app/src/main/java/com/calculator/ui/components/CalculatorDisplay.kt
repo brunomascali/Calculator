@@ -1,6 +1,7 @@
 package com.calculator.ui.components
 
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -18,25 +19,41 @@ import com.calculator.ui.theme.CalculatorDisplayColor
 
 @Preview
 @Composable
-fun CalculatorDisplay(modifier: Modifier = Modifier, text: String = "", ) {
-    Box(
-        contentAlignment = Alignment.Center
+fun CalculatorDisplay(
+    modifier: Modifier = Modifier,
+    currentExpression: String = "9",
+    previousExpressions: List<String> = listOf("1+2", "3*3")
+) {
+    Card(
+        modifier = modifier,
+        colors = CardDefaults.cardColors(
+            containerColor = CalculatorDisplayColor
+        ),
+        shape = RoundedCornerShape(0.0f)
     ) {
-        Card(
-            modifier = modifier,
-            colors = CardDefaults.cardColors(
-                containerColor = CalculatorDisplayColor
-            ),
-            shape = RoundedCornerShape(0.0f)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            horizontalAlignment = Alignment.End,
+            verticalArrangement = Arrangement.Bottom
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(end = 10.dp),
-                contentAlignment = Alignment.CenterEnd
-            ) {
-                Text(text, fontSize = 40.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            previousExpressions.map {
+                Text(
+                    it,
+                    modifier = Modifier.padding(8.dp),
+                    fontSize = 28.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
             }
+            Text(
+                currentExpression,
+                modifier = Modifier.padding(8.dp),
+                fontSize = 40.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         }
     }
 }

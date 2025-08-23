@@ -24,9 +24,14 @@ class CalculatorTests {
 
     @Test
     fun precedence() {
-        var input = "1+2*3"
+        val input = "1+2*3"
         assertEquals(Calculator.eval(parse(input)), 7.0, 1e-10)
-        input = "1*2+3"
+
+    }
+
+    @Test
+    fun precedence2() {
+        val input = "1*2+3"
         assertEquals(Calculator.eval(parse(input)), 5.0, 1e-10)
     }
 

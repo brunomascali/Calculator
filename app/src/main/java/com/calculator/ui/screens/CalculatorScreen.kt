@@ -6,11 +6,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,64 +34,53 @@ data class ButtonInfo(
     val background: Color = DefaultButtonBackground,
     val textColor: Color = Color.Black,
     val modifier: Modifier = Modifier,
-    val onClick: () -> Unit = {
-        var displayText by Calculator.input
-        displayText += text
-    },
+    val onClick: (() -> Unit)? = null,
     val onLongClick: () -> Unit = {}
 )
 
 @Preview
 @Composable
 fun CalculatorScreen() {
-    var displayText by Calculator.input
+    var currentExpressionText by remember { mutableStateOf("") }
+    val previousExpressions = remember { mutableStateListOf<String>() }
 
-    MaterialTheme() {
+    MaterialTheme {
         Column(
             modifier = Modifier
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .fillMaxSize()
+                .padding(bottom = 24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
         ) {
-            Row {
-                CalculatorDisplay(
-                    text = displayText, modifier = Modifier
-                        .padding(bottom = 8.dp)
-                        .fillMaxWidth()
-                        .height(128.dp)
-                )
-            }
-
             val buttonsRows = listOf(
-                listOf(
-                    ButtonInfo(" ", onClick = {}),
-                    ButtonInfo(" ", onClick = {}),
-                    ButtonInfo("(", OperatorButtonColor, textColor = Color.White),
-                    ButtonInfo(")", OperatorButtonColor, textColor = Color.White)
-                ),
                 listOf(
                     ButtonInfo(
                         "C",
                         background = EraseButtonColor,
                         textColor = Color.White,
-                        onClick = { displayText = displayText.dropLast(1) },
+                        onClick = { currentExpressionText = currentExpressionText.dropLast(1) },
                         onLongClick = {
-                            Calculator.input.value = ""
+                            currentExpressionText = ""
+                            previousExpressions.clear()
                         }),
-                    ButtonInfo("√", OperatorButtonColor, textColor = Color.White),
-                    ButtonInfo("^", OperatorButtonColor, textColor = Color.White),
-                    ButtonInfo("/", OperatorButtonColor, textColor = Color.White)
+                    ButtonInfo("(", OperatorButtonColor, textColor = Color.White),
+                    ButtonInfo(")", OperatorButtonColor, textColor = Color.White),
+                    ButtonInfo(
+                        "/", OperatorButtonColor, textColor = Color.White
+                    )
                 ),
                 listOf(
                     ButtonInfo("7"),
                     ButtonInfo("8"),
                     ButtonInfo("9"),
-                    ButtonInfo("*", OperatorButtonColor, textColor = Color.White)
+                    ButtonInfo("/", OperatorButtonColor, textColor = Color.White)
                 ),
                 listOf(
                     ButtonInfo("4"),
                     ButtonInfo("5"),
                     ButtonInfo("6"),
-                    ButtonInfo("+", OperatorButtonColor, textColor = Color.White)
+                    ButtonInfo("*", OperatorButtonColor, textColor = Color.White)
+
                 ),
                 listOf(
                     ButtonInfo("1"),
@@ -100,16 +91,46 @@ fun CalculatorScreen() {
                 listOf(
                     ButtonInfo("."),
                     ButtonInfo("0"),
-                    ButtonInfo(" ", onClick = {}),
-                    ButtonInfo("=", EvalButtonColor, textColor = Color.White, onClick = {
-                        val tokens = parse(displayText)
-                        val result = Calculator.formatDouble(eval(tokens))
-                        displayText = result
-                    })
+                    ButtonInfo(
+                        "=",
+                        EvalButtonColor,
+                        textColor = Color.White,
+                        onClick = {
+                            val tokens = parse(currentExpressionText)
+                            val result = Calculator.formatDouble(eval(tokens))
+                            previousExpressions.add(currentExpressionText)
+                            if (previousExpressions.size > 20) {
+                                previousExpressions.removeAt(0)
+                            }
+                            currentExpressionText = result
+                        }),
+                    ButtonInfo(
+                        "+", OperatorButtonColor, textColor = Color.White
+                    )
                 ),
             )
 
-            buttonsRows.forEach { CalculatorRow(it) }
+            val defaultOnClick: (String) -> Unit = { text ->
+                currentExpressionText += text
+            }
+
+            CalculatorDisplay(
+                currentExpression = currentExpressionText,
+                previousExpressions = previousExpressions,
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp)
+            )
+            buttonsRows.forEach { row ->
+                CalculatorRow(
+                    row.map { button ->
+                        button.copy(
+                            onClick = button.onClick ?: { defaultOnClick(button.text) }
+                        )
+                    }
+                )
+            }
         }
     }
 }

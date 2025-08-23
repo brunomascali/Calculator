@@ -22,13 +22,13 @@ fun CalculatorButton(
     modifier: Modifier = Modifier,
     backgroundColor: Color = Color.LightGray,
     fontColor: Color = Color.White,
-    onClick: () -> Unit = {},
+    onClick: (() -> Unit)? = null,
     onLongClick: () -> Unit = {}
 ) {
     Surface(
         modifier = modifier
             .combinedClickable(
-                onClick = onClick,
+                onClick = onClick ?: {},
                 onLongClick = onLongClick
             ),
         color = backgroundColor,

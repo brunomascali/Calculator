@@ -1,29 +1,24 @@
 package com.calculator
 
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import java.util.Locale
 import java.util.Stack
 import kotlin.math.pow
 import kotlin.math.sqrt
 
 object Calculator {
-    var input: MutableState<String> = mutableStateOf("")
-
     fun eval(expr: List<Token>): Double {
         val numbers = Stack<Double>()
         val operations = Stack<Token>()
 
-        val popAndEval: () -> Double = {
+        fun popAndEval(): Double {
             val operation = operations.pop()
+            val b = numbers.pop()
 
             if (operation.isUnop()) {
-                val b = numbers.pop()
-                unop(operation, b)
+                return unop(operation, b)
             } else {
-                val b = numbers.pop()
                 val a = numbers.pop()
-                binop(operation, a, b)
+                return binop(operation, a, b)
             }
         }
 
@@ -46,9 +41,11 @@ object Calculator {
                     while (operations.isNotEmpty()
                         && operations.peek().type != TokenType.ParenStart
                         && (operations.peek().precedence() > op.precedence()
-                                || (operations.peek().precedence() == op.precedence() && op.associativity() == Associativity.Left))
+                                || (operations.peek()
+                            .precedence() == op.precedence() && op.associativity() == Associativity.Left))
                     ) {
-                        popAndEval()
+                        val result = popAndEval()
+                        numbers.push(result)
                     }
                     operations.push(op)
                 }
@@ -70,14 +67,14 @@ object Calculator {
             TokenType.Multiply -> a * b
             TokenType.Divide -> a / b
             TokenType.Expo -> a.pow(b)
-            else -> -42.0
+            else -> TODO("Unreachable at binop")
         }
     }
 
     private fun unop(token: Token, a: Double): Double {
         return when (token.type) {
             TokenType.Sqrt -> sqrt(a)
-            else -> -42.0
+            else -> TODO("Unreachable at unop")
         }
     }
 
