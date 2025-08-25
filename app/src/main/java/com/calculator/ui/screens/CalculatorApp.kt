@@ -34,7 +34,7 @@ data class ButtonInfo(
 @Composable
 fun CalculatorApp(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
-    val startDestination = Destination.BASIC
+    val startDestination = Destination.PROGRAMMER
 
     Scaffold(
         modifier = modifier,

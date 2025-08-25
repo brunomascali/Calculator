@@ -25,7 +25,7 @@ import com.calculator.parse
 import com.calculator.ui.components.CalculatorDisplay
 import com.calculator.ui.theme.EraseButtonColor
 import com.calculator.ui.theme.EvalButtonColor
-import com.calculator.ui.theme.OperatorButtonColor
+import com.calculator.ui.theme.OperationButtonColor
 
 @Preview
 @Composable
@@ -53,30 +53,30 @@ fun BasicScreen() {
                         currentExpressionText = ""
                         previousExpressions.clear()
                     }),
-                ButtonInfo("(", OperatorButtonColor, textColor = Color.White),
-                ButtonInfo(")", OperatorButtonColor, textColor = Color.White),
+                ButtonInfo("(", OperationButtonColor, textColor = Color.White),
+                ButtonInfo(")", OperationButtonColor, textColor = Color.White),
                 ButtonInfo(
-                    "/", OperatorButtonColor, textColor = Color.White
+                    "/", OperationButtonColor, textColor = Color.White
                 )
             ),
             listOf(
                 ButtonInfo("7"),
                 ButtonInfo("8"),
                 ButtonInfo("9"),
-                ButtonInfo("*", OperatorButtonColor, textColor = Color.White)
+                ButtonInfo("*", OperationButtonColor, textColor = Color.White)
             ),
             listOf(
                 ButtonInfo("4"),
                 ButtonInfo("5"),
                 ButtonInfo("6"),
-                ButtonInfo("-", OperatorButtonColor, textColor = Color.White)
+                ButtonInfo("-", OperationButtonColor, textColor = Color.White)
 
             ),
             listOf(
                 ButtonInfo("1"),
                 ButtonInfo("2"),
                 ButtonInfo("3"),
-                ButtonInfo("+", OperatorButtonColor, textColor = Color.White)
+                ButtonInfo("+", OperationButtonColor, textColor = Color.White)
             ),
             listOf(
                 ButtonInfo("."),
@@ -97,10 +97,6 @@ fun BasicScreen() {
             ),
         )
 
-        val defaultOnClick: (String) -> Unit = { text ->
-            currentExpressionText += text
-        }
-
         CalculatorDisplay(
             currentExpression = currentExpressionText,
             previousExpressions = previousExpressions,
@@ -109,6 +105,10 @@ fun BasicScreen() {
                 .fillMaxWidth()
                 .padding(bottom = 4.dp)
         )
+
+        val defaultOnClick: (String) -> Unit = { text ->
+            currentExpressionText += text
+        }
 
         buttonsRows.forEach { row ->
             CalculatorRow(

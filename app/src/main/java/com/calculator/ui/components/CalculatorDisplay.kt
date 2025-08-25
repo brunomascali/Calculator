@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -27,7 +28,8 @@ fun CalculatorDisplay(
     Card(
         modifier = modifier,
         colors = CardDefaults.cardColors(
-            containerColor = CalculatorDisplayColor
+            containerColor = CalculatorDisplayColor,
+            contentColor = Color.Black
         ),
         shape = RoundedCornerShape(0.0f)
     ) {

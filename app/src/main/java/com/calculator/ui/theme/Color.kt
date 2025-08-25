@@ -12,6 +12,6 @@ val Pink40 = Color(0xFF7D5260)
 
 val DefaultButtonBackground = Color(0xFFeae0d5)
 val EvalButtonColor = Color(0xFF1CA412)
-val OperatorButtonColor = Color(0xFFf77f00)
+val OperationButtonColor = Color(0xFFf77f00)
 val EraseButtonColor = Color(0xFFF44336)
 val CalculatorDisplayColor = Color(0xFFEAE0D5)
